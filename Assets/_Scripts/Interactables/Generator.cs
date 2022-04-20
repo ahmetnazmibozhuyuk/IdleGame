@@ -11,6 +11,8 @@ namespace IdleGame
 
         [SerializeField] private List<ObjectData> objectDataList = new List<ObjectData>();
 
+        [SerializeField] private int unlockAmount;
+
         private int counter;
 
         private float localX = 1, localY = 0, localZ = 0;
@@ -19,7 +21,9 @@ namespace IdleGame
 
         private void Awake()
         {
-            IsGiving = true;
+            if (unlockAmount > 0) IsGiving = false;
+            else IsGiving = true;
+
             InitializePositions();
         }
         private void Start()
@@ -50,6 +54,7 @@ namespace IdleGame
         }
         private IEnumerator SpawnObject()
         {
+            if (!IsGiving) yield break;
             if (counter < 40)
             {
                 var temp = Instantiate(objectToSpawn);
@@ -68,7 +73,14 @@ namespace IdleGame
         }
         public void TakeObject(GameObject givenObj, Transform parent)
         {
-            Debug.Log("given to the reservoir");
+            unlockAmount--;
+            Destroy(givenObj, 0.2f);
+            if (unlockAmount <= 0)
+            {
+                IsGiving = true;
+                StartCoroutine(SpawnObject());
+            }
+
             return;
         }
         public GameObject GiveObject()

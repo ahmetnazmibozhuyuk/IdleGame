@@ -56,7 +56,7 @@ namespace IdleGame
                     backpack.transform.position.z), 0.15f);
                 StartCoroutine(Co_CorrectCubePosition(givenObj, temp));
                 counter++;
-                GameManager.instance.AddBoxToPlayer();
+                GameManager.instance.UpdateUI();
             }
         }
         private IEnumerator Co_CorrectCubePosition(GameObject go, int position)
@@ -78,7 +78,7 @@ namespace IdleGame
             var temp = objectDataList[counter].ObjectHeld;
             temp.transform.SetParent(null);
             objectDataList[counter].ObjectHeld = null;
-
+            GameManager.instance.UpdateUI();
             return temp;
 
         }
@@ -108,7 +108,6 @@ namespace IdleGame
             {
                 StartCoroutine(Co_SendCubeTo(interactable));
             }
-
         }
         private void OnTriggerExit(Collider other)
         {
@@ -120,7 +119,7 @@ namespace IdleGame
             {
                 TakeObject(interactable.GiveObject(), transform);
 
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.3f);
                 StartCoroutine(Co_GetCubeFrom(interactable));
             }
             else
@@ -135,7 +134,7 @@ namespace IdleGame
             {
                 interactable.TakeObject(GiveObject(),null);
 
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.3f);
                 StartCoroutine(Co_SendCubeTo(interactable));
             }
             else

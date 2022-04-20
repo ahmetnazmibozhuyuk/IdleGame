@@ -8,14 +8,11 @@ namespace IdleGame
 {
     public class Stockpile : MonoBehaviour, IInteractable
     {
-        private PlayerBackpack _leftPlaceholder;
-        private Generator _reservoir;
-
         private List<Vector3> ObjectDataList = new List<Vector3>();
 
         [SerializeField] private List<GameObject> heldObjectList;
 
-        private float localX = 6, localY = 5, localZ = 5; 
+        private float localX = 1, localY = 0, localZ = 0; 
 
         private int counter;
 
@@ -24,39 +21,27 @@ namespace IdleGame
         private void Awake()
         {
             IsGiving = false;
-            _leftPlaceholder = GetComponent<PlayerBackpack>();
-            _reservoir = GetComponent<Generator>();
         }
         private void Start()
         {
             InitializePositions();
         }
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                GetCubeFromReservoir();
-            }
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                GetCubeFromRightPlaceholder();
-            }
-        }
         private void InitializePositions()
         {
             for (int i = 0; i < 40; i++)
             {
-                ObjectDataList.Add(new Vector3(localX, localY, localZ));
+                ObjectDataList.Add(new Vector3(localX+transform.position.x,
+                    localY+transform.position.y, localZ+transform.position.z));
 
-                if (localX > 8)
+                if (localX > 2)
                 {
                     localY++;
-                    localX = 5;
+                    localX = 0;
                 }
-                if (localY > 6)
+                if (localY > 1)
                 {
                     localZ++;
-                    localY = 5;
+                    localY = 0;
                 }
                 localX++;
             }
@@ -84,19 +69,6 @@ namespace IdleGame
             var temp = heldObjectList[counter];
             heldObjectList.RemoveAt(counter);
             return temp;
-        }
-        private void GetCubeFromReservoir()
-        {
-            TakeObject(_reservoir.GiveObject(),null);
-        }
-        private void GetCubeFromRightPlaceholder()
-        {
-            if (counter >= 40)
-            {
-                Debug.Log("no capacity");
-                return;
-            }
-            TakeObject(_leftPlaceholder.GiveObject(),null);
         }
 
         public void Interact()

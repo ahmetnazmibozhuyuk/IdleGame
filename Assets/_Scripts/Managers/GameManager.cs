@@ -46,8 +46,9 @@ namespace IdleGame.Managers
             TotalBoxInStore--;
             _uiManager.SetAmountText();
         }
-        public void AddBoxToPlayer()
+        public void UpdateUI()
         {
+
             _uiManager.SetAmountText();
         }
     }
