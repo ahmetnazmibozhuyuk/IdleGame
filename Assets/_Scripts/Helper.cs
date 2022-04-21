@@ -1,10 +1,9 @@
-using System.Collections;
 using UnityEngine;
 using IdleGame.Interactable;
 
 namespace IdleGame.Helper
 {
-    [RequireComponent(typeof(Rigidbody),typeof(Animator),typeof(PlayerBackpack))]
+    [RequireComponent(typeof(Rigidbody), typeof(Animator), typeof(PlayerBackpack))]
     public class Helper : MonoBehaviour
     {
         [SerializeField] private Transform collectTransform;
@@ -63,7 +62,6 @@ namespace IdleGame.Helper
                 _rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(_turnDirection), Time.deltaTime * turnRate * 100));
         }
 
-        
         private void MoveToStockpile()
         {
 
@@ -74,7 +72,7 @@ namespace IdleGame.Helper
         }
         private void MoveToGenerator()
         {
-            if(_helperBackpack.counter <= 0)
+            if (_helperBackpack.counter <= 0)
             {
                 _currentTarget = collectTransform;
             }

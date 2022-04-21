@@ -41,7 +41,7 @@ namespace IdleGame.Interactable
                     localY++;
                     localX = 0;
                 }
-                if (localY > 1)
+                if (localY > 2)
                 {
                     localZ++;
                     localY = 0;
@@ -73,6 +73,7 @@ namespace IdleGame.Interactable
                 return null;
             }
             counter--;
+            GameManager.instance.RemoveBoxFromStockpile();
             var temp = heldObjectList[counter];
             heldObjectList.RemoveAt(counter);
             return temp;

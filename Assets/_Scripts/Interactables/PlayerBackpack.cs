@@ -8,7 +8,6 @@ namespace IdleGame.Interactable
 {
     //@todo: GENERATORLER UNLOCK OLMAK İÇİN SON KÜBÜN GELMESİNİ BEKLESİN
     //@todo: küpleri poolla
-    //@todo: ui düzenle
     public class PlayerBackpack : MonoBehaviour, IInteractable
     {
         [SerializeField] private List<ObjectData> objectDataList = new List<ObjectData>();
@@ -53,6 +52,7 @@ namespace IdleGame.Interactable
                     backpack.transform.position.z), 0.15f);
                 StartCoroutine(Co_CorrectCubePosition(givenObj, temp));
                 counter++;
+                GameManager.instance.AddBoxToBackpack();
                 if(counter>=BackpackCapacity) FullCapacity = true;
             }
         }
@@ -70,11 +70,11 @@ namespace IdleGame.Interactable
                 return GameManager.instance.StockpileInstance.GiveObject();
             }
             FullCapacity = false;
+            GameManager.instance.RemoveBoxFromBackpack();
             counter--;
             var temp = objectDataList[counter].ObjectHeld;
             temp.transform.SetParent(null);
             objectDataList[counter].ObjectHeld = null;
-            GameManager.instance.UpdateUI();
             return temp;
         }
         private void OnTriggerEnter(Collider other)
@@ -111,11 +111,8 @@ namespace IdleGame.Interactable
                 yield break;
             }
         }
-
-        //stockpile dolduğunda break denmeyecek; sadece inTheZone false olduğunda çıkacak
         private IEnumerator Co_SendCubeTo(IInteractable interactable)
         {
-            //if (interactable.IsGiving == true || interactable.FullCapacity) yield break;
             if (interactable.IsGiving == true) yield break;
 
             if (inTheZone)

@@ -53,10 +53,12 @@ namespace IdleGame.Managers
         public void AddBoxToBackpack()
         {
             TotalBoxInBackpack++;
+            _uiManager.SetAmountText();
         }
         public void RemoveBoxFromBackpack()
         {
             TotalBoxInBackpack--;
+            _uiManager.SetAmountText();
         }
         public void RemoveBoxFromStockpile()
         {
