@@ -15,8 +15,6 @@ namespace IdleGame.Helper
 
         [SerializeField] private int carryCapacity;
 
-        private bool _canCollect;
-
         private Transform _currentTarget;
 
         private Vector3 _direction;
@@ -26,6 +24,9 @@ namespace IdleGame.Helper
         private Animator _animator;
         private PlayerBackpack _helperBackpack;
 
+        private float _timer = 1;
+        private float _elapsedTime;
+
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
@@ -34,11 +35,19 @@ namespace IdleGame.Helper
         }
         private void OnEnable()
         {
-            StartCoroutine(Co_TargetSwitcher());
+            _currentTarget = collectTransform;
         }
         private void Update()
         {
             _direction = (_currentTarget.position - transform.position).normalized;
+
+            _elapsedTime += Time.deltaTime;
+            if (_elapsedTime > _timer)
+            {
+                _elapsedTime = 0;
+                MoveToGenerator();
+                MoveToStockpile();
+            }
         }
         private void FixedUpdate()
         {
@@ -53,26 +62,24 @@ namespace IdleGame.Helper
             if (_turnDirection != Vector3.zero)
                 _rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(_turnDirection), Time.deltaTime * turnRate * 100));
         }
+
+        
         private void MoveToStockpile()
         {
 
             if (_helperBackpack.FullCapacity)
             {
-                _canCollect = false;
+                _currentTarget = stockpileTransform;
             }
         }
         private void MoveToGenerator()
         {
+            if(_helperBackpack.counter <= 0)
+            {
+                _currentTarget = collectTransform;
+            }
+        }
 
-        }
-        private IEnumerator Co_TargetSwitcher()
-        {
-            _currentTarget = collectTransform;
-            yield return new WaitForSeconds(6);
-            _currentTarget = stockpileTransform;
-            yield return new WaitForSeconds(6);
-            StartCoroutine(Co_TargetSwitcher());
-        }
 
     }
 }

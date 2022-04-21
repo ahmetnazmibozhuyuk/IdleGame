@@ -6,11 +6,9 @@ using DG.Tweening;
 
 namespace IdleGame.Interactable
 {
-
-    //STOCKPILE DOLUYKEN EŞYA BOŞALTMAYA MÜSADE ETME -son eşyayı boşluğa bırakıyor-
-    //GENERATORLER UNLOCK OLMAK İÇİN SON KÜBÜN GELMESİNİ BEKLESİN
-    //küpleri poolla
-    //ui düzenle
+    //@todo: GENERATORLER UNLOCK OLMAK İÇİN SON KÜBÜN GELMESİNİ BEKLESİN
+    //@todo: küpleri poolla
+    //@todo: ui düzenle
     public class PlayerBackpack : MonoBehaviour, IInteractable
     {
         [SerializeField] private List<ObjectData> objectDataList = new List<ObjectData>();
@@ -18,7 +16,7 @@ namespace IdleGame.Interactable
         [SerializeField] private GameObject backpack;
 
         private float localY = 1;
-        private int counter;
+        public int counter;
 
         private bool inTheZone;
 
@@ -71,7 +69,6 @@ namespace IdleGame.Interactable
             {
                 return GameManager.instance.StockpileInstance.GiveObject();
             }
-
             FullCapacity = false;
             counter--;
             var temp = objectDataList[counter].ObjectHeld;
@@ -85,13 +82,10 @@ namespace IdleGame.Interactable
             if (inTheZone) return;
             if (other.GetComponent<IInteractable>() == null) return;
 
-
             var interactable = other.GetComponent<IInteractable>();
             inTheZone = true;
-            //Debug.Log("trigger enter "+inTheZone);
             if (interactable.IsGiving)
             {
-                
                 StartCoroutine(Co_GetCubeFrom(interactable));
             }
             else
@@ -110,24 +104,35 @@ namespace IdleGame.Interactable
                 TakeObject(interactable.GiveObject(), transform);
 
                 yield return new WaitForSeconds(0.3f);
-                StartCoroutine(Co_GetCubeFrom(interactable));
+                StartCoroutine(Co_GetCubeFrom(interactable)); //@todo: sürekli coroutine çağırma mümkünse mevcut çağrılan coroutine içinde devam et
             }
             else
             {
-
                 yield break;
-
             }
         }
+
+        //stockpile dolduğunda break denmeyecek; sadece inTheZone false olduğunda çıkacak
         private IEnumerator Co_SendCubeTo(IInteractable interactable)
         {
-            if (interactable.IsGiving == true || interactable.FullCapacity) yield break;
+            //if (interactable.IsGiving == true || interactable.FullCapacity) yield break;
+            if (interactable.IsGiving == true) yield break;
+
             if (inTheZone)
             {
-                interactable.TakeObject(GiveObject(), null);
+                if (interactable.FullCapacity)
+                {
+                    yield return new WaitForSeconds(0.3f);
+                    StartCoroutine(Co_SendCubeTo(interactable));
+                }
+                else
+                {
+                    interactable.TakeObject(GiveObject(), null);
 
-                yield return new WaitForSeconds(0.3f);
-                StartCoroutine(Co_SendCubeTo(interactable));
+                    yield return new WaitForSeconds(0.3f);
+                    StartCoroutine(Co_SendCubeTo(interactable));
+                }
+
             }
             else
             {

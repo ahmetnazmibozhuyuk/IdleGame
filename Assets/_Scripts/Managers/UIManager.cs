@@ -11,8 +11,7 @@ namespace IdleGame.Managers
         public void SetAmountText()
         {
             totalBoxInStore.SetText("Total box = " + GameManager.instance.TotalBoxInStore.ToString());
-            
+            carriedBox.SetText("Box amount in the backpack = " + GameManager.instance.TotalBoxInBackpack);
         }
-
     }
 }

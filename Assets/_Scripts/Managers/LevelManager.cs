@@ -9,7 +9,12 @@ namespace IdleGame.Managers
         private int unlockableCounter;
         public void UnlockNext()
         {
-            if (UnlockablesList[unlockableCounter] == null) return;
+            if (UnlockablesList[unlockableCounter] == null)
+            {
+                Debug.Log("Max unlock area is reached.");
+                return;
+            }
+
             UnlockablesList[unlockableCounter].SetActive(true);
             unlockableCounter++;
         }

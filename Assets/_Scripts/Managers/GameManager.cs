@@ -22,8 +22,9 @@ namespace IdleGame.Managers
         }
         [SerializeField] private Stockpile stockpileInstance;
 
-
         public int TotalBoxInStore { get; private set; }
+
+        public int TotalBoxInBackpack { get; private set; }
 
         private UIManager _uiManager;
         private LevelManager _levelManager;
@@ -48,6 +49,14 @@ namespace IdleGame.Managers
         {
             TotalBoxInStore++;
             _uiManager.SetAmountText();
+        }
+        public void AddBoxToBackpack()
+        {
+            TotalBoxInBackpack++;
+        }
+        public void RemoveBoxFromBackpack()
+        {
+            TotalBoxInBackpack--;
         }
         public void RemoveBoxFromStockpile()
         {
