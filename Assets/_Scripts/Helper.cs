@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using IdleGame.Interactable;
 
@@ -19,10 +18,6 @@ namespace IdleGame.Helper
         private bool _canCollect;
 
         private Transform _currentTarget;
-        /*
-        _currentTarget stockpile dolu olursa bir sonraki unlockableGenerator,  
-
-         */
 
         private Vector3 _direction;
         private Vector3 _turnDirection;

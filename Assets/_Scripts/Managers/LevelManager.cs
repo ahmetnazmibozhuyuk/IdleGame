@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace IdleGame.Managers
@@ -15,6 +13,5 @@ namespace IdleGame.Managers
             UnlockablesList[unlockableCounter].SetActive(true);
             unlockableCounter++;
         }
-
     }
 }

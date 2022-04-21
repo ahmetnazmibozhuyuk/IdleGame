@@ -7,7 +7,7 @@ using DG.Tweening;
 namespace IdleGame.Interactable
 {
 
-    //STOCKPILE DOLUYKEN EŞYA BOŞALTMAYA MÜSADE ETME
+    //STOCKPILE DOLUYKEN EŞYA BOŞALTMAYA MÜSADE ETME -son eşyayı boşluğa bırakıyor-
     //GENERATORLER UNLOCK OLMAK İÇİN SON KÜBÜN GELMESİNİ BEKLESİN
     //küpleri poolla
     //ui düzenle
@@ -22,8 +22,8 @@ namespace IdleGame.Interactable
 
         private bool inTheZone;
 
-        public bool IsGiving { get ; set ; }
-        public bool FullCapacity { get ; set ; }
+        public bool IsGiving { get; set; }
+        public bool FullCapacity { get; set; }
 
         public int BackpackCapacity;
 
@@ -55,6 +55,7 @@ namespace IdleGame.Interactable
                     backpack.transform.position.z), 0.15f);
                 StartCoroutine(Co_CorrectCubePosition(givenObj, temp));
                 counter++;
+                if(counter>=BackpackCapacity) FullCapacity = true;
             }
         }
         private IEnumerator Co_CorrectCubePosition(GameObject go, int position)
@@ -70,6 +71,8 @@ namespace IdleGame.Interactable
             {
                 return GameManager.instance.StockpileInstance.GiveObject();
             }
+
+            FullCapacity = false;
             counter--;
             var temp = objectDataList[counter].ObjectHeld;
             temp.transform.SetParent(null);
@@ -79,14 +82,16 @@ namespace IdleGame.Interactable
         }
         private void OnTriggerEnter(Collider other)
         {
+            if (inTheZone) return;
             if (other.GetComponent<IInteractable>() == null) return;
 
-            if (inTheZone) return;
+
             var interactable = other.GetComponent<IInteractable>();
             inTheZone = true;
-            Debug.Log("trigger enter "+inTheZone);
+            //Debug.Log("trigger enter "+inTheZone);
             if (interactable.IsGiving)
             {
+                
                 StartCoroutine(Co_GetCubeFrom(interactable));
             }
             else
@@ -96,14 +101,11 @@ namespace IdleGame.Interactable
         }
         private void OnTriggerExit(Collider other)
         {
-
-                Debug.Log("exited from " + other);
-                inTheZone = false;
-
+            inTheZone = false;
         }
         private IEnumerator Co_GetCubeFrom(IInteractable interactable)
         {
-            if (inTheZone)
+            if (inTheZone && !FullCapacity)
             {
                 TakeObject(interactable.GiveObject(), transform);
 
@@ -112,17 +114,9 @@ namespace IdleGame.Interactable
             }
             else
             {
-                if (inTheZone)
-                {
-                    TakeObject(interactable.GiveObject(), transform);
 
-                    yield return new WaitForSeconds(0.3f);
-                    StartCoroutine(Co_GetCubeFrom(interactable));
-                }
-                else
-                {
-                    yield break;
-                }
+                yield break;
+
             }
         }
         private IEnumerator Co_SendCubeTo(IInteractable interactable)
@@ -130,15 +124,13 @@ namespace IdleGame.Interactable
             if (interactable.IsGiving == true || interactable.FullCapacity) yield break;
             if (inTheZone)
             {
-
-                interactable.TakeObject(GiveObject(),null);
+                interactable.TakeObject(GiveObject(), null);
 
                 yield return new WaitForSeconds(0.3f);
                 StartCoroutine(Co_SendCubeTo(interactable));
             }
             else
             {
-                Debug.Log("left the zone");
                 yield break;
             }
         }

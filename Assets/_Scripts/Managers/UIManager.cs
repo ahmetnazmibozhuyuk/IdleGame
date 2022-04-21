@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -13,7 +11,7 @@ namespace IdleGame.Managers
         public void SetAmountText()
         {
             totalBoxInStore.SetText("Total box = " + GameManager.instance.TotalBoxInStore.ToString());
-            carriedBox.SetText("Carried box amount = " + GameManager.instance.Player.CurrentBoxCarried);
+            
         }
 
     }

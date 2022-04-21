@@ -46,7 +46,6 @@ namespace IdleGame.Managers
         }
         public void AddBoxToStockpile()
         {
-            if (Player.CurrentBoxCarried <= 0) return;
             TotalBoxInStore++;
             _uiManager.SetAmountText();
         }

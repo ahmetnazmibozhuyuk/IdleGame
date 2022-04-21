@@ -14,11 +14,11 @@ namespace IdleGame.Interactable
 
         [SerializeField] private int stockpileCapacity;
 
-        private float localX = 1, localY = 0, localZ = 0; 
+        private float localX = 1, localY = 0, localZ = 0;
 
         private int counter;
 
-        public bool IsGiving { get ; set ; }
+        public bool IsGiving { get; set; }
         public bool FullCapacity { get; set; }
 
         private void Awake()
@@ -33,8 +33,8 @@ namespace IdleGame.Interactable
         {
             for (int i = 0; i < stockpileCapacity; i++)
             {
-                ObjectDataList.Add(new Vector3(localX+transform.position.x,
-                    localY+transform.position.y, localZ+transform.position.z));
+                ObjectDataList.Add(new Vector3(localX + transform.position.x,
+                    localY + transform.position.y, localZ + transform.position.z));
 
                 if (localX > 2)
                 {
@@ -59,11 +59,10 @@ namespace IdleGame.Interactable
                 givenObj.transform.DOMove(ObjectDataList[counter], 0.5f);
                 counter++;
                 GameManager.instance.AddBoxToStockpile();
-            }
-            else
-            {
-                FullCapacity = true;
-                Debug.Log("Stockpile capacity is reached at "+counter+" counter index.");
+                if (counter >= stockpileCapacity)
+                {
+                    FullCapacity = true;
+                }
             }
         }
         public GameObject GiveObject()

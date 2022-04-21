@@ -1,23 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using IdleGame.Managers;
-
+﻿using UnityEngine;
 namespace IdleGame.Control
 {
     [RequireComponent(typeof(Rigidbody), typeof(Animator))]
     public class Controller : MonoBehaviour
     {
         [SerializeField] private float maxSpeed;
-        [Tooltip("How sharp the turn rate will be.")]
         [SerializeField] private float turnRate;
 
-        [SerializeField] private int loadCapacity = 20;
         private Rigidbody _rigidbody;
         private Animator _animator;
-
-        public int CurrentBoxCarried { get; private set; }
-
 
         private Vector3 _hitDownPosition;
         private Vector3 _offset;
