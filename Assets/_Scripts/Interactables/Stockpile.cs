@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using IdleGame.Managers;
 
-namespace IdleGame
+namespace IdleGame.Interactable
 {
     public class Stockpile : MonoBehaviour, IInteractable
     {
@@ -12,11 +12,14 @@ namespace IdleGame
 
         [SerializeField] private List<GameObject> heldObjectList;
 
+        [SerializeField] private int stockpileCapacity;
+
         private float localX = 1, localY = 0, localZ = 0; 
 
         private int counter;
 
         public bool IsGiving { get ; set ; }
+        public bool FullCapacity { get; set; }
 
         private void Awake()
         {
@@ -28,7 +31,7 @@ namespace IdleGame
         }
         private void InitializePositions()
         {
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < stockpileCapacity; i++)
             {
                 ObjectDataList.Add(new Vector3(localX+transform.position.x,
                     localY+transform.position.y, localZ+transform.position.z));
@@ -48,7 +51,7 @@ namespace IdleGame
         }
         public void TakeObject(GameObject givenObj, Transform parent)
         {
-            if (counter < 40)
+            if (counter < stockpileCapacity)
             {
                 if (givenObj == null) return;
                 heldObjectList.Add(givenObj);
@@ -57,23 +60,23 @@ namespace IdleGame
                 counter++;
                 GameManager.instance.AddBoxToStockpile();
             }
+            else
+            {
+                FullCapacity = true;
+                Debug.Log("Stockpile capacity is reached at "+counter+" counter index.");
+            }
         }
         public GameObject GiveObject()
         {
+            FullCapacity = false;
             if (counter <= 0)
             {
-                Debug.Log("not enough cubes");
                 return null;
             }
             counter--;
             var temp = heldObjectList[counter];
             heldObjectList.RemoveAt(counter);
             return temp;
-        }
-
-        public void Interact()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

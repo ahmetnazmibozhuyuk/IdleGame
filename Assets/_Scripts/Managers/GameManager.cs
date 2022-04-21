@@ -1,9 +1,10 @@
 using UnityEngine;
 using IdleGame.Control;
+using IdleGame.Interactable;
 
 namespace IdleGame.Managers
 {
-    [RequireComponent(typeof(UIManager))]
+    [RequireComponent(typeof(UIManager),typeof(LevelManager))]
     public class GameManager : MonoBehaviour
     {
         public static GameManager instance;
@@ -14,10 +15,18 @@ namespace IdleGame.Managers
         }
         [SerializeField] private Controller player;
 
+        public Stockpile StockpileInstance
+        {
+            get { return stockpileInstance; }
+            set { stockpileInstance = value; }
+        }
+        [SerializeField] private Stockpile stockpileInstance;
+
 
         public int TotalBoxInStore { get; private set; }
 
         private UIManager _uiManager;
+        private LevelManager _levelManager;
 
         private void Awake()
         {
@@ -29,6 +38,7 @@ namespace IdleGame.Managers
             instance = this;
 
             _uiManager = GetComponent<UIManager>();
+            _levelManager = GetComponent<LevelManager>();
         }
         private void Start()
         {
@@ -50,6 +60,11 @@ namespace IdleGame.Managers
         {
 
             _uiManager.SetAmountText();
+        }
+
+        public void Unlocked()
+        {
+            _levelManager.UnlockNext();
         }
     }
 }
