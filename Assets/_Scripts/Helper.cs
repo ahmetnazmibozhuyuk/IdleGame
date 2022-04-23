@@ -44,14 +44,16 @@ namespace IdleGame.Helper
         }
         private void FixedUpdate()
         {
-
             AssignMovement();
-
         }
         private void AssignMovement()
         {
             _turnDirection = new Vector3(_direction.x, 0, _direction.z);
-            _rigidbody.MovePosition(transform.position + (_direction * speed * Time.deltaTime));
+            _rigidbody.MovePosition(transform.position + (speed * Time.deltaTime * _direction));
+            if (Vector2.Distance(transform.position, _currentTarget.position) > 0.2f)
+                _animator.SetBool("IsMoving", true);
+            else
+                _animator.SetBool("IsMoving", false);
             if (_turnDirection != Vector3.zero)
                 _rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(_turnDirection), Time.deltaTime * turnRate * 100));
         }

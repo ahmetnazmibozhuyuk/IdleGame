@@ -20,6 +20,8 @@ namespace IdleGame.Interactable
 
         private List<ObjectData> _objectDataList = new List<ObjectData>();
 
+        private Animator _animator;
+
         private float _localY;
         private float _objectTransferSpeed = 0.15f;
 
@@ -31,6 +33,10 @@ namespace IdleGame.Interactable
         public bool FullCapacity { get; set; }
         public InteractableType Type { get ; set ; }
 
+        private void Awake()
+        {
+            _animator = GetComponent<Animator>();
+        }
         private void Start()
         {
             InitializePositions();
@@ -49,7 +55,7 @@ namespace IdleGame.Interactable
             if (Counter < backpackCapacity)
             {
                 if (givenObj == null) return;
-
+                _animator.SetBool("IsCarrying", true);
                 _objectDataList[Counter].ObjectHeld = givenObj;
                 givenObj.transform.rotation = transform.rotation;
                 givenObj.transform.SetParent(transform);
@@ -73,7 +79,11 @@ namespace IdleGame.Interactable
         } //Coroutine'den kurtul timer'a bağla
         public GameObject GiveObject()
         {
-            if (Counter <= 0) return null;
+            if (Counter <= 0) 
+            {
+                _animator.SetBool("IsCarrying", false);
+                return null;
+            } 
             Counter--;
             FullCapacity = false;
             GameManager.instance.RemoveBoxFromBackpack();
@@ -119,6 +129,7 @@ namespace IdleGame.Interactable
         {
             if (inTheZone && !FullCapacity) // şimdilik while döngüsü kullan
             {
+                Debug.Log(name + " is taking a cube");
                 TakeObject(interactable.GiveObject(), transform); 
 
                 yield return new WaitForSeconds(gatherRate);

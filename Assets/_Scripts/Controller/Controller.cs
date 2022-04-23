@@ -19,8 +19,7 @@ namespace IdleGame.Control
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
-            _animator = GetComponent<Animator>();
-            
+            _animator = GetComponent<Animator>();          
         }
         private void Update()
         {
