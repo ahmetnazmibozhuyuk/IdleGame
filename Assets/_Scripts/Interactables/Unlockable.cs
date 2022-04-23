@@ -36,7 +36,6 @@ namespace IdleGame.Interactable
         {
             if (givenObj == null) return;
             if (FullCapacity) return;
-            unlockAmountText.SetText(unlockAmount + " more to unlock!");
             givenObj.transform.DORotateQuaternion(objectMovePoint.rotation, 0.5f);
             givenObj.transform.DOMove(objectMovePoint.position, 0.5f).OnComplete(() => 
             {
@@ -44,6 +43,7 @@ namespace IdleGame.Interactable
                 ObjectPool.Despawn(givenObj);
             });
             unlockAmount--;
+            unlockAmountText.SetText(unlockAmount + " more to unlock!");
             if (unlockAmount <= 0)
             {
                 FullCapacity = true;
@@ -53,7 +53,6 @@ namespace IdleGame.Interactable
         private void UnlockBuilding()
         {
             GameManager.instance.Unlocked();
-
             buildingToUnlock.SetActive(true);
             buildingToUnlock.transform.DOScale(1, 0.5f).SetEase(Ease.OutBounce);
             unlockAmountText.SetText("This building is unlocked!");

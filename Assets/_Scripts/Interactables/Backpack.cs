@@ -6,6 +6,11 @@ using DG.Tweening;
 
 namespace IdleGame.Interactable
 {
+    //@TODO: helper doldururken stockpile'dan aldığında pozisyon sorunu çıkıyoru, ayrıca alıp verirken nadir buglar var düzelt!
+
+
+
+
     public class Backpack : MonoBehaviour, IInteractable
     {
         [SerializeField] private Transform backpackTransform;
@@ -27,7 +32,6 @@ namespace IdleGame.Interactable
 
         private bool inTheZone;
 
-
         public bool FullCapacity { get; set; }
         public InteractableType Type { get ; set ; }
 
@@ -45,7 +49,6 @@ namespace IdleGame.Interactable
             {
                 _localY++;
                 _objectDataList.Add(new ObjectData(new Vector3(0, _localY, 0)));
-
             }
         }
         public void TakeObject(GameObject givenObj, Transform parent)
@@ -77,12 +80,16 @@ namespace IdleGame.Interactable
         } //Coroutine'den kurtul timer'a bağla
         public GameObject GiveObject()
         {
-            if (Counter <= 0) 
+            if (Counter <= 0)
             {
                 _animator.SetBool("IsCarrying", false);
                 return null;
-            } 
+            }
             Counter--;
+            if (Counter <= 0)
+            {
+                _animator.SetBool("IsCarrying", false);
+            }
             FullCapacity = false;
             GameManager.instance.RemoveBoxFromBackpack();
 
@@ -125,13 +132,14 @@ namespace IdleGame.Interactable
         }
         private IEnumerator Co_GetCubeFrom(IInteractable interactable)
         {
-            if (inTheZone && !FullCapacity) // şimdilik while döngüsü kullan
+            if (inTheZone && !FullCapacity)
             {
                 Debug.Log(name + " is taking a cube");
                 TakeObject(interactable.GiveObject(), transform); 
 
                 yield return new WaitForSeconds(gatherRate);
                 StartCoroutine(Co_GetCubeFrom(interactable)); //@todo: sürekli coroutine çağırma mümkünse mevcut çağrılan coroutine içinde devam et veya update içinde timerla hallet
+                                                              // Helper içindeki timer tarzı
             }
             else
             {
