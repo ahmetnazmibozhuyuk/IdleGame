@@ -3,7 +3,7 @@ using IdleGame.Interactable;
 
 namespace IdleGame.Helper
 {
-    [RequireComponent(typeof(Rigidbody), typeof(Animator), typeof(PlayerBackpack))]
+    [RequireComponent(typeof(Rigidbody), typeof(Animator), typeof(Backpack))]
     public class Helper : MonoBehaviour
     {
         [SerializeField] private Transform collectTransform;
@@ -21,7 +21,7 @@ namespace IdleGame.Helper
 
         private Rigidbody _rigidbody;
         private Animator _animator;
-        private PlayerBackpack _helperBackpack;
+        private Backpack _helperBackpack;
 
         private float _timer = 1;
         private float _elapsedTime;
@@ -30,7 +30,7 @@ namespace IdleGame.Helper
         {
             _rigidbody = GetComponent<Rigidbody>();
             _animator = GetComponent<Animator>();
-            _helperBackpack = GetComponent<PlayerBackpack>();
+            _helperBackpack = GetComponent<Backpack>();
         }
         private void OnEnable()
         {
@@ -72,7 +72,7 @@ namespace IdleGame.Helper
         }
         private void MoveToGenerator()
         {
-            if (_helperBackpack.counter <= 0)
+            if (_helperBackpack.Counter <= 0)
             {
                 _currentTarget = collectTransform;
             }

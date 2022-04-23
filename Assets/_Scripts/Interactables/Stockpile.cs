@@ -8,22 +8,21 @@ namespace IdleGame.Interactable
 {
     public class Stockpile : MonoBehaviour, IInteractable
     {
-        private List<Vector3> ObjectDataList = new List<Vector3>();
-
-        [SerializeField] private List<GameObject> heldObjectList;
+        private List<ObjectData> _objectDataList = new List<ObjectData>();
 
         [SerializeField] private int stockpileCapacity;
 
-        private float localX = 1, localY = 0, localZ = 0;
+        private float localX = 1, localY = 0, localZ = 5;
 
         private int counter;
 
-        public bool IsGiving { get; set; }
+
         public bool FullCapacity { get; set; }
+        public InteractableType Type { get; set; }
 
         private void Awake()
         {
-            IsGiving = false;
+            Type = InteractableType.Stockpile;
         }
         private void Start()
         {
@@ -33,8 +32,8 @@ namespace IdleGame.Interactable
         {
             for (int i = 0; i < stockpileCapacity; i++)
             {
-                ObjectDataList.Add(new Vector3(localX + transform.position.x,
-                    localY + transform.position.y, localZ + transform.position.z));
+                _objectDataList.Add(new ObjectData(new Vector3(localX + transform.position.x,
+                    localY + transform.position.y, localZ + transform.position.z)));
 
                 if (localX > 2)
                 {
@@ -43,7 +42,7 @@ namespace IdleGame.Interactable
                 }
                 if (localY > 2)
                 {
-                    localZ++;
+                    localZ--;
                     localY = 0;
                 }
                 localX++;
@@ -54,9 +53,9 @@ namespace IdleGame.Interactable
             if (counter < stockpileCapacity)
             {
                 if (givenObj == null) return;
-                heldObjectList.Add(givenObj);
+                _objectDataList[counter].ObjectHeld = givenObj;
                 givenObj.transform.rotation = Quaternion.Euler(0, 0, 0);
-                givenObj.transform.DOMove(ObjectDataList[counter], 0.5f);
+                givenObj.transform.DOMove(_objectDataList[counter].ObjectPosition, 0.5f);
                 counter++;
                 GameManager.instance.AddBoxToStockpile();
                 if (counter >= stockpileCapacity)
@@ -74,8 +73,9 @@ namespace IdleGame.Interactable
             }
             counter--;
             GameManager.instance.RemoveBoxFromStockpile();
-            var temp = heldObjectList[counter];
-            heldObjectList.RemoveAt(counter);
+
+            var temp = _objectDataList[counter].ObjectHeld;
+            _objectDataList[counter].ObjectHeld = null;
             return temp;
         }
     }

@@ -1,11 +1,8 @@
 fileFormatVersion: 2
-guid: 703f94a14bcbf5a49a5710d9dd25fff4
+guid: dd4ec459c828f35428593a6096688e95
 ModelImporter:
   serializedVersion: 20200
-  internalIDToNameTable:
-  - first:
-      74: 374739464753345130
-    second: Stickman_Rig|Stickman_Rig|Stickman_Idle
+  internalIDToNameTable: []
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -97,7 +94,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   additionalBone: 0
   userData: 

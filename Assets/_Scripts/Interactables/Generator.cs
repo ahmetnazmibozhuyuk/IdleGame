@@ -10,25 +10,24 @@ namespace IdleGame.Interactable
     {
         [SerializeField] private GameObject objectToSpawn;
 
-        [SerializeField] private List<ObjectData> objectDataList = new List<ObjectData>();
-
         [SerializeField] private int maxCapacity;
         [SerializeField] private int unlockAmount;
 
         [SerializeField] private float spawnRate;
 
+        private List<ObjectData> _objectDataList = new List<ObjectData>();
 
-        private int counter;
+        private int _counter;
 
-        private float localX = 1, localY = 0, localZ = 0;
+        private float _localX = 1, _localY = 0, _localZ = 0;
 
-        public bool IsGiving { get; set; }
         public bool FullCapacity { get; set; }
+        public InteractableType Type { get; set; }
+        
 
         private void Awake()
         {
-            if (unlockAmount > 0) IsGiving = false;
-            else IsGiving = true;
+            Type = InteractableType.Generator;
 
             InitializePositions();
         }
@@ -41,32 +40,33 @@ namespace IdleGame.Interactable
         {
             for (int i = 0; i < maxCapacity; i++)
             {
-                objectDataList.Add(new ObjectData(new Vector3(localX + transform.position.x,
-                    localY + transform.position.y,
-                    localZ + transform.position.z)));
+                _objectDataList.Add(new ObjectData(new Vector3(_localX + transform.position.x,
+                    _localY + transform.position.y,
+                    _localZ + transform.position.z)));
 
-                if (localX > 3)
+                if (_localX > 3)
                 {
-                    localY++;
-                    localX = 0;
+                    _localY++;
+                    _localX = 0;
                 }
-                if (localY > 1)
+                if (_localY > 1)
                 {
-                    localZ++;
-                    localY = 0;
+                    _localZ--;
+                    _localY = 0;
                 }
-                localX++;
+                _localX++;
             }
         }
         private IEnumerator SpawnObject()
         {
-            if (!IsGiving) yield break;
-            if (counter < maxCapacity)
+            //if (!IsGiving) yield break;
+            if (_counter < maxCapacity)
             {
                 var temp = Instantiate(objectToSpawn);
-                objectDataList[counter].ObjectHeld = temp;
-                objectDataList[counter].ObjectHeld.transform.position = objectDataList[counter].ObjectPosition;
-                counter++;
+                _objectDataList[_counter].ObjectHeld = temp;
+                _objectDataList[_counter].ObjectHeld.transform.position = _objectDataList[_counter].ObjectPosition;
+                temp.transform.DOScale(1, 0.2f);
+                _counter++;
                 yield return new WaitForSeconds(spawnRate);
                 StartCoroutine(SpawnObject());
             }
@@ -75,21 +75,19 @@ namespace IdleGame.Interactable
                 yield return new WaitForSeconds(spawnRate);
                 StartCoroutine(SpawnObject());
             }
-
         }
 
         public void TakeObject(GameObject givenObj, Transform parent)
         {
-            if (IsGiving) return;
+            //if (IsGiving) return;
             if (givenObj == null) return;
-            //heldObjectList.Add(givenObj);
             givenObj.transform.rotation = Quaternion.Euler(0, 0, 0);
             givenObj.transform.DOMove(transform.position, 0.5f);
             unlockAmount--;
             Destroy(givenObj, 0.6f);
             if (unlockAmount <= 0)
             {
-                IsGiving = true;
+                //IsGiving = true;
                 GameManager.instance.Unlocked();
                 StartCoroutine(SpawnObject());
             }
@@ -97,15 +95,18 @@ namespace IdleGame.Interactable
 
         public GameObject GiveObject()
         {
-            if (counter <= 0)
+            if (_counter <= 0)
             {
                 //Debug.Log("not enough cubes");
                 return null;
             }
-            counter--;
-            var temp = objectDataList[counter].ObjectHeld;
-            objectDataList[counter].ObjectHeld = null;
+            _counter--;
+            var temp = _objectDataList[_counter].ObjectHeld;
+            _objectDataList[_counter].ObjectHeld = null;
+            Debug.Log("generator gives object");
+
             return temp;
+
         }
 
     }
