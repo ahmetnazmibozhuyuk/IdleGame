@@ -73,35 +73,42 @@ namespace IdleGame.Interactable
         } //Coroutine'den kurtul timer'a bağla
         public GameObject GiveObject()
         {
-            if (Counter <= 0)
-            {
-                return GameManager.instance.StockpileInstance.GiveObject();
-            }
+            if (Counter <= 0) return null;
+            Counter--;
             FullCapacity = false;
             GameManager.instance.RemoveBoxFromBackpack();
-            Counter--;
+
             var temp = _objectDataList[Counter].ObjectHeld;
             temp.transform.SetParent(null);
             _objectDataList[Counter].ObjectHeld = null;
+
             return temp;
         }
         private void OnTriggerEnter(Collider other)
         {
             if (inTheZone) return;
-            if (FullCapacity) return;
             if (other.GetComponent<IInteractable>() == null) return;
-
-
             var interactable = other.GetComponent<IInteractable>();
             inTheZone = true;
-            Debug.Log("interacted object is " + interactable);
-            if (interactable.Type == InteractableType.Stockpile || interactable.Type == InteractableType.Generator)
+            switch (interactable.Type)
             {
-                StartCoroutine(Co_GetCubeFrom(interactable));
-            }
-            else
-            {
-                StartCoroutine(Co_SendCubeTo(interactable));
+                case InteractableType.Generator:
+                    StartCoroutine(Co_GetCubeFrom(interactable));
+                    break;
+                case InteractableType.Stockpile:
+                    switch (gathererType)
+                    {
+                        case GathererType.Player:
+                            StartCoroutine(Co_GetCubeFrom(interactable));
+                            break;
+                        case GathererType.Helper:
+                            StartCoroutine(Co_SendCubeTo(interactable));
+                            break;
+                    }
+                    break;
+                case InteractableType.Unlockable:
+                    StartCoroutine(Co_SendCubeTo(interactable));
+                    break;
             }
         }
         private void OnTriggerExit(Collider other)
@@ -138,7 +145,6 @@ namespace IdleGame.Interactable
                     yield return new WaitForSeconds(gatherRate);
                     StartCoroutine(Co_SendCubeTo(interactable));
                 }
-
             }
             else
             {
@@ -169,7 +175,6 @@ namespace IdleGame
     {
         public void TakeObject(GameObject givenObj, Transform parent);
         public GameObject GiveObject();
-        //public bool IsGiving { get; set; }
         public bool FullCapacity { get; set; }
         public InteractableType Type { get; set; }
 

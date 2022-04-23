@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using IdleGame.Managers;
@@ -8,17 +7,16 @@ namespace IdleGame.Interactable
 {
     public class Stockpile : MonoBehaviour, IInteractable
     {
-        private List<ObjectData> _objectDataList = new List<ObjectData>();
+        public bool FullCapacity { get; set; }
+        public InteractableType Type { get; set; }
 
         [SerializeField] private int stockpileCapacity;
 
-        private float localX = 1, localY = 0, localZ = 5;
+        private List<ObjectData> _objectDataList = new List<ObjectData>();
 
-        private int counter;
+        private float _localX = 1, _localY = 0.5f, _localZ = 5;
 
-
-        public bool FullCapacity { get; set; }
-        public InteractableType Type { get; set; }
+        private int _counter;
 
         private void Awake()
         {
@@ -32,33 +30,33 @@ namespace IdleGame.Interactable
         {
             for (int i = 0; i < stockpileCapacity; i++)
             {
-                _objectDataList.Add(new ObjectData(new Vector3(localX + transform.position.x,
-                    localY + transform.position.y, localZ + transform.position.z)));
+                _objectDataList.Add(new ObjectData(new Vector3(_localX + transform.position.x,
+                    _localY + transform.position.y, _localZ + transform.position.z)));
 
-                if (localX > 2)
+                if (_localX > 2)
                 {
-                    localY++;
-                    localX = 0;
+                    _localY++;
+                    _localX = 0;
                 }
-                if (localY > 2)
+                if (_localY > 2)
                 {
-                    localZ--;
-                    localY = 0;
+                    _localZ--;
+                    _localY = 0.5f;
                 }
-                localX++;
+                _localX++;
             }
         }
         public void TakeObject(GameObject givenObj, Transform parent)
         {
-            if (counter < stockpileCapacity)
+            if (_counter < stockpileCapacity)
             {
                 if (givenObj == null) return;
-                _objectDataList[counter].ObjectHeld = givenObj;
+                _objectDataList[_counter].ObjectHeld = givenObj;
                 givenObj.transform.rotation = Quaternion.Euler(0, 0, 0);
-                givenObj.transform.DOMove(_objectDataList[counter].ObjectPosition, 0.5f);
-                counter++;
+                givenObj.transform.DOMove(_objectDataList[_counter].ObjectPosition, 0.5f);
+                _counter++;
                 GameManager.instance.AddBoxToStockpile();
-                if (counter >= stockpileCapacity)
+                if (_counter >= stockpileCapacity)
                 {
                     FullCapacity = true;
                 }
@@ -67,15 +65,15 @@ namespace IdleGame.Interactable
         public GameObject GiveObject()
         {
             FullCapacity = false;
-            if (counter <= 0)
+            if (_counter <= 0)
             {
                 return null;
             }
-            counter--;
+            _counter--;
             GameManager.instance.RemoveBoxFromStockpile();
 
-            var temp = _objectDataList[counter].ObjectHeld;
-            _objectDataList[counter].ObjectHeld = null;
+            var temp = _objectDataList[_counter].ObjectHeld;
+            _objectDataList[_counter].ObjectHeld = null;
             return temp;
         }
     }

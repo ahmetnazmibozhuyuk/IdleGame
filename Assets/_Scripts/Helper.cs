@@ -40,13 +40,7 @@ namespace IdleGame.Helper
         {
             _direction = (_currentTarget.position - transform.position).normalized;
 
-            _elapsedTime += Time.deltaTime;
-            if (_elapsedTime > _timer)
-            {
-                _elapsedTime = 0;
-                MoveToGenerator();
-                MoveToStockpile();
-            }
+            AssignJob();
         }
         private void FixedUpdate()
         {
@@ -60,6 +54,16 @@ namespace IdleGame.Helper
             _rigidbody.MovePosition(transform.position + (_direction * speed * Time.deltaTime));
             if (_turnDirection != Vector3.zero)
                 _rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(_turnDirection), Time.deltaTime * turnRate * 100));
+        }
+        private void AssignJob()
+        {
+            _elapsedTime += Time.deltaTime;
+            if (_elapsedTime > _timer)
+            {
+                _elapsedTime = 0;
+                MoveToGenerator();
+                MoveToStockpile();
+            }
         }
 
         private void MoveToStockpile()

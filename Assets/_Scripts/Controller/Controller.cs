@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 namespace IdleGame.Control
 {
     [RequireComponent(typeof(Rigidbody), typeof(Animator))]
@@ -19,6 +20,7 @@ namespace IdleGame.Control
         {
             _rigidbody = GetComponent<Rigidbody>();
             _animator = GetComponent<Animator>();
+            
         }
         private void Update()
         {
