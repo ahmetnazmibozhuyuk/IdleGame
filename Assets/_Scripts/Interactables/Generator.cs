@@ -74,7 +74,7 @@ namespace IdleGame.Interactable
 
         public void TakeObject(GameObject givenObj, Transform parent)
         {
-
+            Debug.Log("An object is given to the generator.");
         }
 
         public GameObject GiveObject()

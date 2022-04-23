@@ -14,6 +14,8 @@ namespace IdleGame.Interactable
 
         [SerializeField] private TextMeshProUGUI unlockAmountText;
 
+        [SerializeField] private GameObject lockedText;
+
         [SerializeField] private Transform objectMovePoint;
         [SerializeField] private int unlockAmount;
 
@@ -21,18 +23,20 @@ namespace IdleGame.Interactable
         private void Awake()
         {
             Type = InteractableType.Unlockable;
+            unlockAmountText.SetText(unlockAmount + " more to unlock!");
         }
-
 
         public GameObject GiveObject()
         {
-            throw new System.NotImplementedException();
+            Debug.Log("An object is taken from the unlockable");
+            return null;
         }
 
         public void TakeObject(GameObject givenObj, Transform parent)
         {
             if (givenObj == null) return;
             if (FullCapacity) return;
+            unlockAmountText.SetText(unlockAmount + " more to unlock!");
             givenObj.transform.DORotateQuaternion(objectMovePoint.rotation, 0.5f);
             givenObj.transform.DOMove(objectMovePoint.position, 0.5f).OnComplete(() => 
             {
@@ -42,15 +46,18 @@ namespace IdleGame.Interactable
             unlockAmount--;
             if (unlockAmount <= 0)
             {
+                FullCapacity = true;
                 UnlockBuilding();
             }
         }
         private void UnlockBuilding()
         {
             GameManager.instance.Unlocked();
-            FullCapacity = true;
+
             buildingToUnlock.SetActive(true);
             buildingToUnlock.transform.DOScale(1, 0.5f).SetEase(Ease.OutBounce);
+            unlockAmountText.SetText("This building is unlocked!");
+            lockedText.SetActive(false);
         }
     }
 }

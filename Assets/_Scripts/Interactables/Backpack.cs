@@ -6,8 +6,6 @@ using DG.Tweening;
 
 namespace IdleGame.Interactable
 {
-    //@todo: GENERATOR UNLOCK OLMAK İÇİN SON KÜBÜN GELMESİNİ BEKLESİN
-    //@todo: küpleri poolla
     public class Backpack : MonoBehaviour, IInteractable
     {
         [SerializeField] private Transform backpackTransform;
