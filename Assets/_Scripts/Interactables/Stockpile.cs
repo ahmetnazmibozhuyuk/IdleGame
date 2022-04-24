@@ -53,7 +53,7 @@ namespace IdleGame.Interactable
                 if (givenObj == null) return;
                 _objectDataList[_counter].ObjectHeld = givenObj;
                 givenObj.transform.rotation = Quaternion.Euler(0, 0, 0);
-                givenObj.transform.DOMove(_objectDataList[_counter].ObjectPosition, 0.5f);
+                givenObj.transform.DOMove(_objectDataList[_counter].ObjectPosition, 0.1f);
                 _counter++;
                 GameManager.instance.AddBoxToStockpile();
                 if (_counter >= stockpileCapacity)

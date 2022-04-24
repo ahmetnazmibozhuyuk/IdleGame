@@ -33,7 +33,7 @@ namespace IdleGame.Interactable
         private bool inTheZone;
 
         public bool FullCapacity { get; set; }
-        public InteractableType Type { get ; set ; }
+        public InteractableType Type { get; set; }
 
         private void Awake()
         {
@@ -64,11 +64,11 @@ namespace IdleGame.Interactable
                 givenObj.transform.DOMove(new Vector3(backpackTransform.position.x,
                     backpackTransform.position.y + _objectDataList[Counter].ObjectPosition.y,
                     backpackTransform.position.z), _objectTransferSpeed);
-
                 StartCoroutine(Co_CorrectCubePosition(givenObj, Counter));
                 Counter++;
-                GameManager.instance.AddBoxToBackpack();
-                if(Counter>=backpackCapacity) FullCapacity = true;
+                if (gathererType == GathererType.Player)
+                    GameManager.instance.AddBoxToBackpack();
+                if (Counter >= backpackCapacity) FullCapacity = true;
             }
         }
         private IEnumerator Co_CorrectCubePosition(GameObject go, int position)
@@ -82,7 +82,6 @@ namespace IdleGame.Interactable
         {
             if (Counter <= 0)
             {
-                _animator.SetBool("IsCarrying", false);
                 return null;
             }
             Counter--;
@@ -91,12 +90,12 @@ namespace IdleGame.Interactable
                 _animator.SetBool("IsCarrying", false);
             }
             FullCapacity = false;
-            GameManager.instance.RemoveBoxFromBackpack();
+            if (gathererType == GathererType.Player)
+                GameManager.instance.RemoveBoxFromBackpack();
 
             var temp = _objectDataList[Counter].ObjectHeld;
             temp.transform.SetParent(null);
             _objectDataList[Counter].ObjectHeld = null;
-
             return temp;
         }
         private void OnTriggerEnter(Collider other)
@@ -135,7 +134,7 @@ namespace IdleGame.Interactable
             if (inTheZone && !FullCapacity)
             {
                 Debug.Log(name + " is taking a cube");
-                TakeObject(interactable.GiveObject(), transform); 
+                TakeObject(interactable.GiveObject(), transform);
 
                 yield return new WaitForSeconds(gatherRate);
                 StartCoroutine(Co_GetCubeFrom(interactable)); //@todo: sürekli coroutine çağırma mümkünse mevcut çağrılan coroutine içinde devam et veya update içinde timerla hallet
