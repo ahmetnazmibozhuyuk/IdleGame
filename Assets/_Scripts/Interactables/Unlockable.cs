@@ -20,7 +20,6 @@ namespace IdleGame.Interactable
         [SerializeField] private Transform objectMovePoint;
         [SerializeField] private int unlockAmount;
 
-
         private void Awake()
         {
             Type = InteractableType.Unlockable;
