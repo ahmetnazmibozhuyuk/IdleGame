@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
@@ -10,7 +11,7 @@ namespace IdleGame.Interactable
         public bool FullCapacity { get; set; }
         public InteractableType Type { get ; set; }
 
-        [SerializeField] private GameObject buildingToUnlock;
+        [SerializeField] private List<GameObject> buildingToUnlock = new List<GameObject>();
 
         [SerializeField] private TextMeshProUGUI unlockAmountText;
 
@@ -54,10 +55,19 @@ namespace IdleGame.Interactable
         private void UnlockBuilding()
         {
             GameManager.instance.Unlocked();
-            buildingToUnlock.SetActive(true);
-            buildingToUnlock.transform.DOScale(1, 0.5f).SetEase(Ease.OutBounce);
+            UnlockPart(0);
             unlockAmountText.SetText("This building is unlocked!");
             lockedText.SetActive(false);
+        }
+        private void UnlockPart(int index)
+        {
+            buildingToUnlock[index].SetActive(true);
+            buildingToUnlock[index].transform.DOScale(1, 0.3f).SetEase(Ease.OutSine).OnComplete(() =>
+            {
+                index++;
+                if(index<buildingToUnlock.Count && buildingToUnlock[index] != null)
+                UnlockPart(index);
+            });
         }
     }
 }
