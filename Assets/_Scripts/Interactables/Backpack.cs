@@ -6,13 +6,12 @@ using DG.Tweening;
 
 namespace IdleGame.Interactable
 {
-    //@TODO: helper doldururken stockpile'dan aldığında pozisyon sorunu çıkıyoru, ayrıca alıp verirken nadir buglar var düzelt!
-
-
-
-
     public class Backpack : MonoBehaviour, IInteractable
     {
+        public bool FullCapacity { get; set; }
+        public InteractableType Type { get; set; }
+        public int Counter { get; private set; }
+
         [SerializeField] private Transform backpackTransform;
 
         [SerializeField] private int backpackCapacity;
@@ -28,12 +27,7 @@ namespace IdleGame.Interactable
         private float _localY;
         private float _objectTransferSpeed = 0.15f;
 
-        public int Counter { get; private set; }
-
-        private bool inTheZone;
-
-        public bool FullCapacity { get; set; }
-        public InteractableType Type { get; set; }
+        private bool _inTheZone;
 
         private void Awake()
         {
@@ -100,10 +94,10 @@ namespace IdleGame.Interactable
         }
         private void OnTriggerEnter(Collider other)
         {
-            if (inTheZone) return;
+            if (_inTheZone) return;
             if (other.GetComponent<IInteractable>() == null) return;
             var interactable = other.GetComponent<IInteractable>();
-            inTheZone = true;
+            _inTheZone = true;
             switch (interactable.Type)
             {
                 case InteractableType.Generator:
@@ -127,45 +121,32 @@ namespace IdleGame.Interactable
         }
         private void OnTriggerExit(Collider other)
         {
-            inTheZone = false;
+            _inTheZone = false;
         }
         private IEnumerator Co_GetCubeFrom(IInteractable interactable)
         {
-            if (inTheZone && !FullCapacity)
+            while (_inTheZone && !FullCapacity)
             {
-                Debug.Log(name + " is taking a cube");
                 TakeObject(interactable.GiveObject(), transform);
-
-                yield return new WaitForSeconds(gatherRate);
-                StartCoroutine(Co_GetCubeFrom(interactable)); //@todo: sürekli coroutine çağırma mümkünse mevcut çağrılan coroutine içinde devam et veya update içinde timerla hallet
-                                                              // Helper içindeki timer tarzı
+                yield return new WaitForSeconds(gatherRate); //@todo: sürekli coroutine çağırma mümkünse mevcut çağrılan coroutine içinde devam et veya update içinde timerla hallet
             }
-            else
-            {
-                yield break;
-            }
+            yield break;
         }
         private IEnumerator Co_SendCubeTo(IInteractable interactable)
         {
-            if (inTheZone)
+            while (_inTheZone)
             {
                 if (interactable.FullCapacity)
                 {
                     yield return new WaitForSeconds(gatherRate);
-                    StartCoroutine(Co_SendCubeTo(interactable));
                 }
                 else
                 {
                     interactable.TakeObject(GiveObject(), null);
-
                     yield return new WaitForSeconds(gatherRate);
-                    StartCoroutine(Co_SendCubeTo(interactable));
                 }
             }
-            else
-            {
-                yield break;
-            }
+            yield break;
         }
     }
 }
@@ -203,5 +184,4 @@ namespace IdleGame
     {
         Player = 0, Helper = 1
     }
-
 }

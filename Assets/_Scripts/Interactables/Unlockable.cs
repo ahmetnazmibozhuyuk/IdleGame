@@ -23,15 +23,16 @@ namespace IdleGame.Interactable
         private void Awake()
         {
             Type = InteractableType.Unlockable;
+        }
+        private void Start()
+        {
             unlockAmountText.SetText(unlockAmount + " more to unlock!");
         }
-
         public GameObject GiveObject()
         {
             Debug.Log("An object is taken from the unlockable");
             return null;
         }
-
         public void TakeObject(GameObject givenObj, Transform parent)
         {
             if (givenObj == null) return;

@@ -21,15 +21,14 @@ namespace IdleGame.Interactable
 
         public bool FullCapacity { get; set; }
         public InteractableType Type { get; set; }
-        
 
         private void Awake()
         {
             Type = InteractableType.Generator;
-            InitializePositions();
         }
         private void Start()
         {
+            InitializePositions();
             StartCoroutine(SpawnObject());
         }
         private void InitializePositions()
@@ -71,7 +70,6 @@ namespace IdleGame.Interactable
                 StartCoroutine(SpawnObject());
             }
         }
-
         public void TakeObject(GameObject givenObj, Transform parent)
         {
             Debug.Log("An object is given to the generator.");

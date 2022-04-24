@@ -1,6 +1,5 @@
 using UnityEngine;
 using IdleGame.Control;
-using IdleGame.Interactable;
 
 namespace IdleGame.Managers
 {
@@ -14,13 +13,6 @@ namespace IdleGame.Managers
             set { player = value; }
         }
         [SerializeField] private Controller player;
-
-        public Stockpile StockpileInstance
-        {
-            get { return stockpileInstance; }
-            set { stockpileInstance = value; }
-        }
-        [SerializeField] private Stockpile stockpileInstance;
 
         public int TotalBoxInStore { get; private set; }
 
@@ -64,11 +56,6 @@ namespace IdleGame.Managers
         {
             if (TotalBoxInStore <= 0) return;
             TotalBoxInStore--;
-            _uiManager.SetAmountText();
-        }
-        public void UpdateUI()
-        {
-
             _uiManager.SetAmountText();
         }
 
