@@ -38,7 +38,7 @@ namespace IdleGame.Interactable
             if (givenObj == null) return;
             if (FullCapacity) return;
             givenObj.transform.DORotateQuaternion(objectMovePoint.rotation, 0.5f);
-            givenObj.transform.DOMove(objectMovePoint.position, 0.5f).OnComplete(() => 
+            givenObj.transform.DOJump(objectMovePoint.position,2,1, 0.5f).OnComplete(() => 
             {
                 givenObj.transform.localScale = new Vector3(0, 0, 0);
                 ObjectPool.Despawn(givenObj);

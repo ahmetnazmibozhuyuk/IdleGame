@@ -55,9 +55,9 @@ namespace IdleGame.Interactable
                 givenObj.transform.rotation = transform.rotation;
                 givenObj.transform.SetParent(transform);
 
-                givenObj.transform.DOMove(new Vector3(backpackTransform.position.x,
+                givenObj.transform.DOJump(new Vector3(backpackTransform.position.x,
                     backpackTransform.position.y + _objectDataList[Counter].ObjectPosition.y,
-                    backpackTransform.position.z), _objectTransferSpeed);
+                    backpackTransform.position.z),2,1, _objectTransferSpeed);
                 StartCoroutine(Co_CorrectCubePosition(givenObj, Counter));
                 Counter++;
                 if (gathererType == GathererType.Player)
