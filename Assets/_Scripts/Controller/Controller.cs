@@ -38,7 +38,7 @@ namespace IdleGame.Control
             }
             else if (Input.GetMouseButton(0))
             {
-                _offset = (Input.mousePosition - _hitDownPosition).normalized;
+                _offset = Vector3.ClampMagnitude((Input.mousePosition - _hitDownPosition),10);
                 _offsetOnXZ = new Vector3(_offset.x, _offset.z, _offset.y);
 
                 _animator.SetBool("IsMoving", true);
